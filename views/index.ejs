@@ -21,8 +21,10 @@
 
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav navbar-right">
-	        <li><a href="#" class="btn-warning"><i class="fa fa-plus fa-lg icon-margin"></i>New Poll</a></li>
-	        <li><a href="#" class="btn-success"><i class="fa fa-user fa-lg icon-margin"></i>Login</a></li>
+					<% if (!loggedIn) { %>
+	        <li><a href="#" data-toggle="modal" data-target="#login-modal" class="btn-success"><i class="fa fa-user fa-lg icon-margin"></i>Login</a></li>
+					<% }else{ %>
+					<li><a href="#" class="btn-warning"><i class="fa fa-plus fa-lg icon-margin"></i>New Poll</a></li>
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle btn-primary" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user fa-lg icon-margin"></i>Jayadeep KM<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
@@ -31,6 +33,7 @@
 	          </ul>
 					</ul>
 	        </li>
+					<% } %>
 	    </div>
 	  </div>
 	</nav>
@@ -38,11 +41,56 @@
 
 <div class="container-fluid">
 
+
 	<h1>Latest Polls</h1>
-
-
 </div>
 
+<div class="modal" id="login-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+        <h4 class="modal-title">Login</h4>
+      </div>
+      <div class="modal-body">
+
+				<div class="social-buttons">
+
+					<a href="/auth/facebook" class="btn btn-social btn-fb"><i class="fa fa-facebook icon-margin"></i>Login using Facebook</a>
+					<a href="/auth/google" class="btn btn-social btn-gp"><i class="fa fa-google icon-margin"></i>Login using Google</a>
+
+				</div>
+
+				<h4 class="text-center">Or</h4>
+
+				<form class="form-horizontal form-login">
+				  <fieldset>
+				    <div class="form-group">
+				      <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+				      <div class="col-lg-10">
+				        <input class="form-control" id="inputEmail" placeholder="Email" type="text">
+				      </div>
+				    </div>
+				    <div class="form-group">
+				      <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+				      <div class="col-lg-10">
+				        <input class="form-control" id="inputPassword" placeholder="Password" type="password">
+				      </div>
+				    </div>
+
+				    <div class="form-group">
+				      <div class="col-lg-10 col-lg-offset-2">
+				        <button type="submit" class="btn btn-primary"><i class="fa fa-lock icon-margin"></i>Login</button>
+				        <button class="btn btn-info"><i class="fa fa-lock icon-margin"></i>Signup</button>
+				      </div>
+				    </div>
+				  </fieldset>
+				</form>
+
+			</div>
+      </div>
+  </div>
+</div>
 
 
 	<script src="/js/jquery.min.js"></script>

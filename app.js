@@ -26,11 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/',function(req,res){
-  res.render('index')
-})
-
-app.use('/api', routes);
+app.use('/', routes);
 app.use('/vote', vote);
 
 // catch 404 and forward to error handler

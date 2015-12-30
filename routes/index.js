@@ -4,7 +4,7 @@ var user = require('../models/user')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var data = {}
+  var data = {loggedIn : false}
   res.render('index',data);
 });
 
