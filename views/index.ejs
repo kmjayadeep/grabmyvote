@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<link rel="icon" href="/img/favicon.png">
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -24,15 +25,15 @@
 					<% if (!loggedIn) { %>
 	        <li><a href="#" data-toggle="modal" data-target="#login-modal" class="btn-success"><i class="fa fa-user fa-lg icon-margin"></i>Login</a></li>
 					<% }else{ %>
-					<li><a href="#" class="btn-warning"><i class="fa fa-plus fa-lg icon-margin"></i>New Poll</a></li>
+					<li><a href="#" data-toggle="modal" data-target="#newpoll-modal" class="btn-warning"><i class="fa fa-plus fa-lg icon-margin"></i>New Poll</a></li>
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle btn-primary" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user fa-lg icon-margin"></i>Jayadeep KM<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	            <li><a href="/profile">Profile</a></li>
-	            <li><a href="/logout">Logout</a></li>
+	            <li><a href="/auth/logout">Logout</a></li>
 	          </ul>
-					</ul>
 	        </li>
+		</ul>
 					<% } %>
 	    </div>
 	  </div>
@@ -40,9 +41,48 @@
 
 
 <div class="container-fluid">
-
-
 	<h1>Latest Polls</h1>
+
+
+	<% polls.forEach(function(poll,i){ %>
+	<% if(i%3==0) {
+			opened = true;
+		%>
+	<div class="row">
+	<% } %>
+		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			  		<%=poll.question%> 
+					<a class="btn btn-small-padding btn-primary pull-right" href="poll/<%=poll._id%>">
+						Go to Poll
+					</a>
+			  </div>
+			  <div class="panel-body">
+				<ul class="list-group">
+				<% poll.options.forEach(function(option){%>
+				  <li class="list-group-item">
+				    <span class="badge"><%=option.noVotes%></span>
+				    <%=option.option%>
+				  </li>
+				<% }) %>
+				</ul>
+				<small>by <%=poll.creator.name%></small>
+			  </div>
+			</div>
+		</div>
+	<% if(i%3==2) {
+			opened = false;
+		%>
+		</div>
+	<% } %>
+	<% })
+		if(opened){
+	 %>
+		</div>
+	 <% } %>
+	</div>
+
 </div>
 
 <div class="modal" id="login-modal">
@@ -80,7 +120,7 @@
 
 				    <div class="form-group">
 				      <div class="col-lg-10 col-lg-offset-2">
-				        <button type="submit" class="btn btn-primary"><i class="fa fa-lock icon-margin"></i>Login</button>
+				        <button class="btn btn-primary"><i class="fa fa-lock icon-margin"></i>Login</button>
 				        <button class="btn btn-info"><i class="fa fa-lock icon-margin"></i>Signup</button>
 				      </div>
 				    </div>
@@ -93,8 +133,70 @@
 </div>
 
 
+
+<div class="modal" id="newpoll-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+        <h4 class="modal-title">New Poll</h4>
+      </div>
+      <div class="modal-body">
+
+				<form class="form-horizontal form-poll">
+				  <fieldset>
+				   <h4 class="text-center">Poll Question</h4>
+				    <div class="form-group">
+				        <input class="form-control" id="inputpoll" placeholder="Which is the best OS?" type="text">
+				    </div>
+
+				   <h5 class="text-center">Options</h5>
+
+				    <div class="form-group" id="options">
+				        <input class="form-control option" placeholder="Arch linux" type="text">
+				        <input class="form-control option" placeholder="Ubuntu" type="text">
+				    </div>
+
+				    <div class="form-group">
+				        <button id="savepoll" type="submit" class="btn btn-primary"><i class="fa fa-save icon-margin"></i>Save</button>
+				        <button id="addoption" class="btn btn-info"><i class="fa fa-plus icon-margin"></i>Add Option</button>
+				    </div>
+				  </fieldset>
+				</form>
+
+			</div>
+      </div>
+  </div>
+</div>
+
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script>
 
+	var baseUrl = 'http://localhost:3000/'
+
+		$(window).load(function(){
+			$('#addoption').click(function(event){
+				event.preventDefault()
+				$('<input class="form-control option" placeholder="Option" type="text">').appendTo('#options');
+			})
+			$('#savepoll').click(function(event){
+				event.preventDefault()
+				var params = {}
+				params.question = $('#inputpoll').val()
+				params.choices = []
+				ops = $('.option');
+				for(var i=0;i<ops.length;i++)
+					params.choices.push($(ops[i]).val())
+				console.log(params)
+				params.choices = JSON.stringify(params.choices)
+				$.post(baseUrl+'poll/new',params,function(data,status){
+					$('.form-poll').trigger('reset')
+					$('#newpoll-modal').modal('toggle');
+					window.location = '/'
+				})
+			})
+		})
+	</script>
 </body>
 </html>

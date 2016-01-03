@@ -1,6 +1,7 @@
-.icon-margin{
-  margin-right: 0.5em;
+.icon-margin {
+    margin-right: 0.5em;
 }
+
 .social-buttons .btn-social {
     width: 15em;
     display: block;
@@ -8,13 +9,20 @@
     text-align: left;
     color: white;
 }
-.btn-fb{
-  background: blue;
+
+.btn-fb {
+    background: blue;
 }
-.btn-gp{
-  background: tomato;
+
+.btn-gp {
+    background: tomato;
 }
-.form-login{
-  max-width: 25em;
-  margin: auto;
+.btn.btn-small-padding{
+    padding: 0.1em 1em;
+}
+
+.form-login,
+.form-poll {
+    max-width: 25em;
+    margin: auto;
 }
