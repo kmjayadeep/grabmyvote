@@ -41,24 +41,16 @@
 
 
 <div class="container-fluid">
-	<h1>Latest Polls</h1>
-
-
-	<% polls.forEach(function(poll,i){ %>
-	<% if(i%3==0) {
-			opened = true;
-		%>
+	<h1>
+		<i class="fa fa-question-circle"></i>
+		<%=poll.question%>
+		</h1>
+		<h6 class="creator-head">by <%=poll.creator.name%></h6>
+		<br/>
 	<div class="row">
-	<% } %>
-		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			  		<%=poll.question%> 
-					<a class="btn btn-small-padding btn-primary pull-right" href="poll/view/<%=poll._id%>">
-						Go to Poll
-					</a>
-			  </div>
-			  <div class="panel-body">
+		<div class="col-md-6">
+		
+
 				<ul class="list-group">
 				<% poll.options.forEach(function(option){%>
 				  <li class="list-group-item">
@@ -67,22 +59,9 @@
 				  </li>
 				<% }) %>
 				</ul>
-				<small>by <%=poll.creator.name%></small>
-			  </div>
-			</div>
-		</div>
-	<% if(i%3==2) {
-			opened = false;
-		%>
-		</div>
-	<% } %>
-	<% })
-		if(opened){
-	 %>
-		</div>
-	 <% } %>
-	</div>
 
+		</div>
+	</div>
 </div>
 
 <div class="modal" id="login-modal">

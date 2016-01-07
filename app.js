@@ -14,6 +14,7 @@ var poll = require('./routes/poll');
 var User = require('./models/user');
 
 var FacebookStrategy = require('passport-facebook').Strategy
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 var app = express();
 
 mongoose.connect(config.dbUrl)
@@ -30,7 +31,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'jagapoga',
-    store: new MongoStore({db:'votingapp'})
+    store: new MongoStore({
+        db: 'votingapp'
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -45,7 +48,7 @@ passport.deserializeUser(function(user_id, done) {
     })
 });
 
-passport.use(new FacebookStrategy({
+passport.use('facebook', new FacebookStrategy({
         clientID: config.facebookAppId,
         clientSecret: config.facebookAppSecret,
         callbackURL: config.facebookCallbackUrl,
@@ -75,6 +78,38 @@ passport.use(new FacebookStrategy({
         })
     }
 ))
+
+passport.use('google', new GoogleStrategy({
+        clientID: config.googleClientId,
+        clientSecret: config.googleClientSecret,
+        callbackURL: config.googleCallbackUrl
+    },
+    function(accessToken, refreshToken, profile, done) {
+
+        process.nextTick(function() {
+            console.log(profile)
+            User.findOne({
+                email: profile.email
+            }, function(err, user) {
+                if (err)
+                    return done(err)
+                if (user)
+                    return done(null, user)
+                var user = new User({
+                    name: profile.displayName,
+                    email: profile.email,
+                    google: {
+                        id: profile.id
+                    }
+                })
+                user.save(function(err, u) {
+                    return done(err, u)
+                })
+            })
+        })
+
+    }
+));
 
 app.use('/', routes);
 app.use('/auth', auth);
