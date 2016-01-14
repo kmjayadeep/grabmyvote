@@ -48,7 +48,7 @@
 		<h6 class="creator-head">by <%=poll.creator.name%></h6>
 		<br/>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-6 col-sm-6">
 		
 
 				<ul class="list-group">
@@ -59,6 +59,14 @@
 				  </li>
 				<% }) %>
 				</ul>
+
+		</div>
+
+
+		<div class="col-md-6 col-sm-6">
+
+			<canvas id="myChart" class="chart-canvas"></canvas>
+
 
 		</div>
 	</div>
@@ -150,6 +158,7 @@
 
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/Chart.min.js"></script>
 	<script>
 
 	var baseUrl = 'http://localhost:3000/'
@@ -175,6 +184,31 @@
 					window.location = '/'
 				})
 			})
+
+			var ctx = $("#myChart").get(0).getContext("2d");
+
+			var data = [
+			    {
+			        value: 300,
+			        color:"#F7464A",
+			        highlight: "#FF5A5E",
+			        label: "Red"
+			    },
+			    {
+			        value: 50,
+			        color: "#46BFBD",
+			        highlight: "#5AD3D1",
+			        label: "Green"
+			    },
+			    {
+			        value: 100,
+			        color: "#FDB45C",
+			        highlight: "#FFC870",
+			        label: "Yellow"
+			    }
+			]
+
+			var myDoughnutChart = new Chart(ctx).Doughnut(data,options);
 		})
 	</script>
 </body>

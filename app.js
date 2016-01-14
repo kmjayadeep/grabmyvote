@@ -43,9 +43,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(user_id, done) {
-    User.findById(user_id, function(err, user) {
-        done(err, user);
-    })
+    User.findById(user_id, done)
 });
 
 passport.use('facebook', new FacebookStrategy({
@@ -56,14 +54,21 @@ passport.use('facebook', new FacebookStrategy({
     },
     function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
-            console.log(profile)
+            // console.log(profile)
             User.findOne({
                 email: profile.emails[0].value
             }, function(err, user) {
                 if (err)
                     return done(err)
-                if (user)
-                    return done(null, user)
+                if (user) {
+                    console.log(user)
+                    if (user.facebook.id)
+                        return done(null, user)
+                    user.facebook = {
+                        id: profile.id
+                    }
+                    return user.save(done)
+                }
                 var user = new User({
                     name: profile.displayName,
                     email: profile.emails[0].value,
@@ -71,9 +76,7 @@ passport.use('facebook', new FacebookStrategy({
                         id: profile.id
                     }
                 })
-                user.save(function(err, u) {
-                    return done(err, u)
-                })
+                user.save(done)
             })
         })
     }
@@ -87,17 +90,22 @@ passport.use('google', new GoogleStrategy({
     function(accessToken, refreshToken, profile, done) {
 
         process.nextTick(function() {
-            console.log(profile)
             User.findOne({
-                email: profile.email
+                email: profile.emails[0].value
             }, function(err, user) {
                 if (err)
                     return done(err)
-                if (user)
-                    return done(null, user)
+                if (user) {
+                    if (user.google.id)
+                        return done(null, user)
+                    user.google = {
+                        id: profile.id
+                    }
+                    return user.save(done)
+                }
                 var user = new User({
                     name: profile.displayName,
-                    email: profile.email,
+                    email: profile.emails[0].value,
                     google: {
                         id: profile.id
                     }
