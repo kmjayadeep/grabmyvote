@@ -12,10 +12,7 @@ var reqAuthenticated = function(req, res, next) {
 var isAuthenticated = function(req, res, next) {
     if (req.isAuthenticated())
         return next()
-    return res.json({
-        code: -1,
-        message: 'Not logged in'
-    })
+    return res.redirect('/')
 }
 
 router.get('/view/:id', function(req, res) {
@@ -23,10 +20,26 @@ router.get('/view/:id', function(req, res) {
     data = {
         loggedIn: req.isAuthenticated()
     }
+    var colors = ["#F7464A", "#46BFBD", "#FDB45C"]
+    var highlights = ["#FF5A5E", "#5AD3D1", "#FFC870"]
     Poll.findById(id)
         .populate('creator')
         .exec(function(err, poll) {
             data.poll = poll
+            var options = poll.options
+            var color = 0
+            data.chartData = options.map(function(option) {
+                return {
+                    value: option.noVotes,
+                    label: option.option,
+                    color: colors[color % colors.length],
+                    highlight: highlights[color++ % colors.length]
+                }
+            })
+            if (data.loggedIn && poll.vote.indexOf(req.user._id) == -1)
+                data.optionClass = "poll-option"
+            else
+                data.optionClass = ""
             res.render('poll', data)
         })
 })
@@ -56,11 +69,11 @@ router.get('/vote/:id/:option', isAuthenticated, function(req, res) {
                         message: 'Invalid id',
                         error: {}
                     })
-                res.redirect('/poll/view' + id)
+                res.redirect('/poll/view/' + id)
 
             })
         } else
-            res.redirect('/poll/view' + id)
+            res.redirect('/poll/view/' + id)
 
     })
 

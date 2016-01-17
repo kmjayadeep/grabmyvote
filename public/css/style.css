@@ -17,7 +17,8 @@
 .btn-gp {
     background: tomato;
 }
-.btn.btn-small-padding{
+
+.btn.btn-small-padding {
     padding: 0.1em 1em;
 }
 
@@ -26,9 +27,20 @@
     max-width: 25em;
     margin: auto;
 }
-.creator-head{
+
+.creator-head {
     margin-left: 1em;
 }
-.chart-canvas{
-    width:100%;
+
+.chart-canvas {
+    width: 100%;
+}
+
+.poll-option {
+    cursor: pointer;
+    transition: 0.8s;
+}
+
+.poll-option:hover {
+    background: #008CBA none repeat scroll 0% 0%;
 }
