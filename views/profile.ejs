@@ -41,48 +41,31 @@
 
 
 <div class="container-fluid">
-	<h1>Latest Polls</h1>
 
-
-	<% polls.forEach(function(poll,i){ %>
-	<% if(i%3==0) {
-			opened = true;
-		%>
+<h2 class="text-center">
+		<%=user.name%>
+		</h2>
+		<h3 class="text-center">
+			No of Polls : <%=polls.length%>
+			<br/>
+			<br/>
 	<div class="row">
-	<% } %>
-		<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			  		<%=poll.question%> 
-					<a class="btn btn-small-padding btn-primary pull-right" href="poll/view/<%=poll._id%>">
-						Go to Poll
-					</a>
-			  </div>
-			  <div class="panel-body">
-				<ul class="list-group">
-				<% poll.options.forEach(function(option){%>
-				  <li class="list-group-item">
-				    <span class="badge"><%=option.noVotes%></span>
-				    <%=option.option%>
-				  </li>
-				<% }) %>
-				</ul>
-				<small>by <%=poll.creator.name%></small>
-			  </div>
-			</div>
-		</div>
-	<% if(i%3==2) {
-			opened = false;
-		%>
-		</div>
-	<% } %>
-	<% })
-		if(opened){
-	 %>
-		</div>
-	 <% } %>
-	</div>
+		
+			<div class="col-md-6 col-md-offset-3">
 
+				<div class="list-group">
+
+<%polls.forEach(function(poll){ %>
+	  		<a href="/poll/view/<%=poll._id%>" class="list-group-item">
+	  		<%=poll.question%>
+	  		<span class="badge"><%=poll.vote.length%></span>
+			  </a>
+<%})%>
+				</div>
+
+			</div>
+		</h3>
+	</div>
 </div>
 
 <div class="modal" id="login-modal">
@@ -171,6 +154,7 @@
 
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/Chart.min.js"></script>
 	<script>
 
 	var baseUrl = 'http://localhost:3000/'
@@ -196,6 +180,8 @@
 					window.location = '/'
 				})
 			})
+
+		
 		})
 	</script>
 </body>

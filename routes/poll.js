@@ -18,7 +18,8 @@ var isAuthenticated = function(req, res, next) {
 router.get('/view/:id', function(req, res) {
     var id = req.params.id
     data = {
-        loggedIn: req.isAuthenticated()
+        loggedIn: req.isAuthenticated(),
+        user: req.user
     }
     var colors = ["#F7464A", "#46BFBD", "#FDB45C"]
     var highlights = ["#FF5A5E", "#5AD3D1", "#FFC870"]
@@ -40,6 +41,10 @@ router.get('/view/:id', function(req, res) {
                 data.optionClass = "poll-option"
             else
                 data.optionClass = ""
+            if (req.user._id + '' == poll.creator._id + '')
+                data.owner = true
+            else
+                data.owner = false
             res.render('poll', data)
         })
 })
@@ -76,6 +81,48 @@ router.get('/vote/:id/:option', isAuthenticated, function(req, res) {
             res.redirect('/poll/view/' + id)
 
     })
+
+})
+
+router.get('/delete/:id', isAuthenticated, function(req, res) {
+    var id = req.params.id
+    Poll.findById(id, function(err, poll) {
+        if (err)
+            return res.redirect('/')
+
+        if (poll.creator + '' == req.user._id) {
+            poll.remove(function() {
+                return res.redirect('/')
+            })
+        } else {
+            return res.redirect('/')
+        }
+    })
+})
+
+router.post('/option', isAuthenticated, function(req, res) {
+    var id = req.body._id
+    var option = req.body.option
+
+    Poll.findById(id, function(err, poll) {
+        if (err)
+            return res.send('err')
+        if (poll.creator + '' != req.user._id + '')
+            return res.send('not auth')
+        poll.options.push({
+            noVotes: 0,
+            option: option
+        })
+        poll.save(function(err) {
+            if (err)
+                return res.send('err')
+            return res.send('ok')
+        })
+
+    })
+
+
+
 
 })
 

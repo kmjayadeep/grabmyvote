@@ -27,7 +27,7 @@
 					<% }else{ %>
 					<li><a href="#" data-toggle="modal" data-target="#newpoll-modal" class="btn-warning"><i class="fa fa-plus fa-lg icon-margin"></i>New Poll</a></li>
 	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle btn-primary" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user fa-lg icon-margin"></i>Jayadeep KM<span class="caret"></span></a>
+	          <a href="#" class="dropdown-toggle btn-primary" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user fa-lg icon-margin"></i><%=user.name%><span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	            <li><a href="/profile">Profile</a></li>
 	            <li><a href="/auth/logout">Logout</a></li>
@@ -59,6 +59,19 @@
 				  </li>
 				<% }) %>
 				</ul>
+
+				<% if(owner){%>
+
+
+					<a class="btn btn-info" data-toggle="modal" data-target="#newoption-modal">
+						Add option
+					</a>
+					<a href="/poll/delete/<%=poll._id%>" class="btn btn-danger">
+						Delete Poll
+					</a>
+
+
+				<% } %>
 
 		</div>
 
@@ -156,6 +169,38 @@
   </div>
 </div>
 
+
+
+
+<div class="modal" id="newoption-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i></button>
+        <h4 class="modal-title">New Option</h4>
+      </div>
+      <div class="modal-body">
+
+				<form class="form-horizontal form-poll">
+				  <fieldset>
+				   <h4 class="text-center">Option</h4>
+				    <div class="form-group">
+				        <input class="form-control" id="newop" placeholder="new option" type="text">
+				    </div>
+
+				    <div class="form-group">
+				        <button id="newoption" class="btn btn-info"><i class="fa fa-plus icon-margin"></i>Add Option</button>
+				    </div>
+				  </fieldset>
+				</form>
+
+			</div>
+      </div>
+  </div>
+</div>
+
+
+
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/Chart.min.js"></script>
@@ -182,6 +227,19 @@
 					$('.form-poll').trigger('reset')
 					$('#newpoll-modal').modal('toggle');
 					window.location = '/'
+				})
+			})
+
+			$('#newoption').click(function(event){
+				event.preventDefault()
+				var params = {
+					_id:'<%=poll._id%>'
+				}
+				params.option = $('#newop').val()
+				$.post(baseUrl+'poll/option',params,function(data,status){
+					$('.form-poll').trigger('reset')
+					$('#newpoption-modal').modal('toggle');
+					location.reload()
 				})
 			})
 
