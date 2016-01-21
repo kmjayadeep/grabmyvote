@@ -41,7 +41,7 @@ router.get('/view/:id', function(req, res) {
                 data.optionClass = "poll-option"
             else
                 data.optionClass = ""
-            if (req.user._id + '' == poll.creator._id + '')
+            if (data.loggedIn && req.user._id + '' == poll.creator._id + '')
                 data.owner = true
             else
                 data.owner = false
